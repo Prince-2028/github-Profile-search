@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import loader from "./assets/loader.png";
 import {
   LineChart,
   Line,
@@ -15,11 +16,15 @@ function App() {
   const [user, setUser] = useState<any>(null);
   const [repos, setRepos] = useState<any[]>([]);
   const [commitData, setCommitData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const searchProfile = async () => {
+    setLoading(true);
     try {
       const userRes = await axios.get(`https://api.github.com/users/${search}`);
-      const repoRes = await axios.get(`https://api.github.com/users/${search}/repos?per_page=100`);
+      const repoRes = await axios.get(
+        `https://api.github.com/users/${search}/repos?per_page=100`
+      );
       setUser(userRes.data);
       setRepos(repoRes.data);
       setSearch("");
@@ -41,14 +46,18 @@ function App() {
       }
 
       const countMap: Record<string, number> = {};
-      allCommits.forEach(date => {
+      allCommits.forEach((date) => {
         countMap[date] = (countMap[date] || 0) + 1;
       });
 
-      const chartData = Object.entries(countMap).map(([date, commits]) => ({
-        date,
-        commits,
-      })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const chartData = Object.entries(countMap)
+        .map(([date, commits]) => ({
+          date,
+          commits,
+        }))
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
 
       setCommitData(chartData);
     } catch (error) {
@@ -56,11 +65,25 @@ function App() {
       setUser(null);
       setRepos([]);
       setCommitData([]);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 text-gray-800">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 text-gray-800 relative">
+      {/* Loader */}
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+          <img
+            src={loader}
+            alt="Loading..."
+            className="w-20 h-20 animate-spin"
+          />
+        </div>
+      )}
+
+      {/* Search Box */}
       <div className="w-full max-w-xl flex flex-col sm:flex-row items-center gap-4 mb-8">
         <input
           type="text"
@@ -77,6 +100,7 @@ function App() {
         </button>
       </div>
 
+      {/* User Profile */}
       {user && (
         <div className="text-center mb-6">
           <img
@@ -89,26 +113,37 @@ function App() {
         </div>
       )}
 
+      {/* Commits Chart */}
       {commitData.length > 0 && (
         <div className="w-full max-w-2xl mb-8">
-          <h3 className="text-lg font-semibold mb-2 text-center">Daily Commits Chart</h3>
+          <h3 className="text-lg font-semibold mb-2 text-center">
+            Daily Commits Chart
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={commitData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="commits" stroke="#3b82f6" strokeWidth={2} />
+              <Line
+                type="monotone"
+                dataKey="commits"
+                stroke="#3b82f6"
+                strokeWidth={2}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
       )}
 
+      {/* Repositories List */}
       <div className="w-full max-w-2xl space-y-4">
         {repos.map((repo) => (
           <div key={repo.id} className="border border-gray-200 rounded-md p-4">
             <h3 className="font-semibold text-base">{repo.name}</h3>
-            <h3 className="text-sm text-gray-500">Last updated: {repo.updated_at}</h3>
+            <h3 className="text-sm text-gray-500">
+              Last updated: {repo.updated_at}
+            </h3>
             <p className="text-sm text-gray-600">
               {repo.description || "No description"}
             </p>
