@@ -17,6 +17,8 @@ function App() {
   const [repos, setRepos] = useState<any[]>([]);
   const [commitData, setCommitData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const reposPerPage = 5;
 
   const searchProfile = async () => {
     setLoading(true);
@@ -27,6 +29,7 @@ function App() {
       );
       setUser(userRes.data);
       setRepos(repoRes.data);
+      setCurrentPage(1);
       setSearch("");
 
       const allCommits: string[] = [];
@@ -70,6 +73,11 @@ function App() {
     }
   };
 
+  const indexOfLastRepo = currentPage * reposPerPage;
+  const indexOfFirstRepo = indexOfLastRepo - reposPerPage;
+  const currentRepos = repos.slice(indexOfFirstRepo, indexOfLastRepo);
+  const totalPages = Math.ceil(repos.length / reposPerPage);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 text-gray-800 relative">
       {/* Loader */}
@@ -84,7 +92,7 @@ function App() {
       )}
 
       {/* Search Box */}
-      <div className="w-full max-w-xl flex flex-col sm:flex-row items-center gap-4 mb-8">
+      <div className="w-full max-w-xl flex flex- sm:flex-row items-center gap-4 mb-8">
         <input
           type="text"
           placeholder="Enter GitHub username"
@@ -136,28 +144,64 @@ function App() {
         </div>
       )}
 
-      {/* Repositories List */}
-      <div className="w-full max-w-2xl space-y-4">
-        {repos.map((repo) => (
-          <div key={repo.id} className="border border-gray-200 rounded-md p-4">
-            <h3 className="font-semibold text-base">{repo.name}</h3>
-            <h3 className="text-sm text-gray-500">
-              Last updated: {repo.updated_at}
-            </h3>
-            <p className="text-sm text-gray-600">
-              {repo.description || "No description"}
-            </p>
-            <a
-              href={repo.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline text-sm mt-2 inline-block"
+      {/* Repositories List with Pagination */}
+      {repos.length > 0 && (
+        <div className="w-full max-w-2xl space-y-4">
+          {currentRepos.map((repo) => (
+            <div
+              key={repo.id}
+              className="border border-gray-200 rounded-md p-4"
             >
-              View Repository
-            </a>
+              <h3 className="font-semibold text-base">{repo.name}</h3>
+              <h3 className="text-sm text-gray-500">
+                Last updated: {repo.updated_at}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {repo.description || "No description"}
+              </p>
+              <a
+                href={repo.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline text-sm mt-2 inline-block"
+              >
+                View Repository
+              </a>
+            </div>
+          ))}
+
+          {/* Pagination Buttons */}
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded-md ${
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2 text-sm font-medium text-gray-700">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded-md ${
+                currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
+            >
+              Next
+            </button>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
