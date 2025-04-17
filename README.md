@@ -1,54 +1,37 @@
-# React + TypeScript + Vite
+# ⚙️ GitHub Profile Analyzer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sleek and simple tool to visualize GitHub user data — just enter a username and explore public repositories, commits, and profile insights!
 
-Currently, two official plugins are available:
+🌐 Live Demo: [githubanalizer.netlify.app](https://githubanalizer.netlify.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🔍 Search any GitHub username
+- 📦 View public repositories
+- 📈 Check commit history
+- 💻 Clean UI powered by React + Tailwind CSS
+- ⚡ Fast and responsive performance
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ Built With
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- [React.js](https://reactjs.org/) – Frontend framework
+- [Tailwind CSS](https://tailwindcss.com/) – For utility-first, modern styling
+- [GitHub REST API](https://docs.github.com/en/rest) – To fetch user data and repo details
+- [Axios](https://axios-http.com/) – For API calls
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+---
+
+---
+
+## 📦 Installation
+
+```bash
+git clone https://github.com/yourusername/github-analyzer.git
+cd github-analyzer
+npm install
+npm run dev
 ```
