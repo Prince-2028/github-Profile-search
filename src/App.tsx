@@ -90,9 +90,8 @@ function App() {
           />
         </div>
       )}
-
       {/* Search Box */}
-      <div className="w-full max-w-xl flex flex- sm:flex-row items-center gap-4 mb-8">
+      <div className="w-full max-w-xl flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 mx-auto">
         <input
           type="text"
           placeholder="Enter GitHub username"
